@@ -36,8 +36,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProvider
     });
     controller.forward();
     controller.addListener(() {
-      setState(() {
-      });
+      setState(() {});
     });
   }
 
@@ -54,49 +53,56 @@ class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProvider
       backgroundColor: Colors.white,
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Row(
+        child: SingleChildScrollView(
+          child: Container(
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
-                Hero(
-                  tag: 'flash',
-                  child: Container(
-                      height: 80,
-                      child: Image.asset('images/logo.png')),
+                Row(
+                  children: <Widget>[
+                    Hero(
+                      tag: 'flash',
+                      child: Container(
+                          height: 80,
+                          child: Image.asset('images/logo.png')),
+                    ),
+                    DefaultTextStyle(
+                      child: AnimatedTextKit(
+                        animatedTexts: [
+                          TypewriterAnimatedText('Flash Chat',
+                            speed: const Duration(milliseconds: 300,),),
+                        ],
+                        repeatForever: true,
+                      ),
+                      style: const TextStyle(
+                          fontSize: 50.0,
+                          fontWeight: FontWeight.w900, color: Colors.black54
+                      ),
+                    ),
+                  ],
                 ),
-                DefaultTextStyle(
-                  child: AnimatedTextKit(
-                    animatedTexts: [
-                      TypewriterAnimatedText('Flash Chat',
-                        speed: const Duration(milliseconds: 300,),),
-                    ],
-                    repeatForever: true,
-                  ),
-                  style: const TextStyle(
-                      fontSize: 65.0,
-                      fontWeight: FontWeight.w900, color: Colors.black54
-                  ),
+                const SizedBox(
+                  height: 48.0,
+                ),
+                RoundedButton(
+                    text: 'LogIn',
+                    color: Colors.blueAccent,
+                    onPressed: () => Navigator.pushNamed(context, LoginScreen.id)
+                ),
+                const SizedBox(
+                  height: 12,
+                ),
+                RoundedButton(
+                    text: 'Register', color: Colors.blueAccent,
+                    onPressed: () =>
+                        Navigator.pushNamed(context, RegistrationScreen.id)
                 ),
               ],
             ),
-            const SizedBox(
-              height: 48.0,
-            ),
-            RoundedButton(
-              text:'LogIn',
-              color:Colors.blueAccent,
-              onPressed:()=>Navigator.pushNamed(context, LoginScreen.id)
-            ),
-            const SizedBox(
-              height: 12,
-            ),
-            RoundedButton(
-              text:'Register',color:Colors.blueAccent,
-              onPressed:()=> Navigator.pushNamed(context,RegistrationScreen.id)
-            ),
-          ],
+          ),
         ),
       ),
     );
