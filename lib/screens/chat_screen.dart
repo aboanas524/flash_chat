@@ -21,7 +21,7 @@ class _ChatScreenState extends State<ChatScreen> {
     getCurrentUser();
   }
 
-  final _fireStore = FirebaseFirestore.instance;
+  final _fireStore = FirebaseFirestore.instance.collection('messages');
   final messageTextController = TextEditingController();
   late String messageText;
   final _auth = FirebaseAuth.instance;
@@ -35,75 +35,81 @@ class _ChatScreenState extends State<ChatScreen> {
         loggedInUser = user;
       }
     } catch (e) {
-      print(e);
+      print('Error in auth = $e');
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        leading: null,
-        actions: <Widget>[
-          IconButton(
-              icon: const Icon(Icons.exit_to_app),
-              onPressed: () {
-                _auth.signOut();
-                Navigator.pushNamed(context, WelcomeScreen.id);
-              }),
-        ],
-        title: const Text('⚡️Chat'),
-        backgroundColor: Colors.lightBlueAccent,
-      ),
-      body: SafeArea(
-        child: Container(
-          height: MediaQuery
-              .of(context)
-              .size
-              .height,
-          width: MediaQuery
-              .of(context)
-              .size
-              .width,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              MessagesStream(
-                  fireStore: _fireStore, mUser: loggedInUser.email.toString()),
-              Container(
-                decoration: kMessageContainerDecoration,
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    Expanded(
-                      child: TextField(
-                        controller: messageTextController,
-                        onChanged: (value) {
-                          messageText = value;
-                        },
-                        decoration: kMessageTextFieldDecoration,
-                      ),
-                    ),
-                    MaterialButton(
-                      onPressed: () {
-                        messageTextController.clear();
-                        _fireStore.collection('messages').add({
-                          'text': messageText,
-                          'sender': loggedInUser.email
-                        });
-                      },
-                      child: const Text(
-                        'Send',
-                        style: kSendButtonTextStyle,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+    return SafeArea(
+      child: Scaffold(
+          appBar: AppBar(
+            leading: null,
+            actions: <Widget>[
+              IconButton(
+                  icon: const Icon(Icons.exit_to_app),
+                  onPressed: () {
+                    _auth.signOut();
+                    Navigator.pushNamed(context, WelcomeScreen.id);
+                  }),
             ],
+            title: const Text('⚡️Chat'),
+            backgroundColor: Colors.lightBlueAccent,
           ),
-        ),
+          body: Container(
+            width: MediaQuery
+                .of(context)
+                .size
+                .width,
+            height: MediaQuery
+                .of(context)
+                .size
+                .height,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Expanded(child: MessagesStream(fireStore: _fireStore,
+                    myUser: loggedInUser.email.toString())),
+                Container(
+                  decoration: kMessageContainerDecoration,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Expanded(
+                        child: TextField(
+                          controller: messageTextController,
+                          onChanged: (value) {
+                            messageTextController.text = value;
+                          },
+                          decoration: kMessageTextFieldDecoration,
+                        ),
+                      ),
+                      MaterialButton(
+                        onPressed: () {
+                          try {
+                            _fireStore.add({
+                              'text': messageTextController.text,
+                              'sender': loggedInUser.email
+                            });
+                          } catch (e) {
+                            print('Error in Adding = $e');
+                          }
+                          messageTextController.clear();
+                        },
+                        child: const Text(
+                          'Send',
+                          style: kSendButtonTextStyle,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          )
       ),
     );
   }
