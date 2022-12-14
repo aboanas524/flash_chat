@@ -1,25 +1,34 @@
 import 'package:flash_chat/constants.dart';
+import 'package:flash_chat/providers/chatProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:provider/provider.dart';
 
 class ChatScreen extends StatefulWidget {
-  const ChatScreen({Key? key}) : super(key: key);
+  final String chatId;
+  const ChatScreen({Key? key, required this.chatId}) : super(key: key);
 
   @override
   State<ChatScreen> createState() => _ChatScreenState();
 }
 
 class _ChatScreenState extends State<ChatScreen> {
-   final  _firestore = FirebaseFirestore.instance.collection('chats');
   final messageTextController = TextEditingController();
   late String messageText;
   @override
+  void initState() {
+    super.initState();
+    Provider.of<ChatProvider>(context, listen: false)
+        .getChatMessages(widget.chatId);
+  }
+
+  @override
   Widget build(BuildContext context) {
-    print(_firestore);
+    Provider.of<ChatProvider>(context).messages;
     return Scaffold(
       appBar: AppBar(
-        title:const Text(''),
+        title: const Text(''),
       ),
       body: Container(
         decoration: kMessageContainerDecoration,
@@ -39,11 +48,12 @@ class _ChatScreenState extends State<ChatScreen> {
             MaterialButton(
               onPressed: () {
                 try {
+                  /* 
                   _firestore.add({
                     'text': messageTextController.text,
                     'sender': FirebaseAuth.instance.currentUser?.email,
-                    'dateMessage':DateTime.now()
-                  });
+                    'dateMessage': DateTime.now()
+                  }); */
                 } catch (e) {
                   print('Error in Adding = $e');
                 }

@@ -5,8 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flash_chat/providers/chatProvider.dart';
 
-import '../widgets//TextFieldInput.dart';
-import '../widgets//rounded_button.dart';
+import 'package:flash_chat/widgets//TextFieldInput.dart';
+import 'package:flash_chat/widgets//rounded_button.dart';
+
 class LoginScreen extends StatefulWidget {
   static const String id = 'login_screen';
   const LoginScreen({super.key});
@@ -14,22 +15,22 @@ class LoginScreen extends StatefulWidget {
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
+
 class _LoginScreenState extends State<LoginScreen> {
   late String email;
   final _auth = FirebaseAuth.instance;
 
   late String password;
-  late bool showSpinner=false;
+  late bool showSpinner = false;
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       backgroundColor: Colors.white,
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24.0),
         child: SingleChildScrollView(
           child: Container(
-            decoration:const BoxDecoration(
+            decoration: const BoxDecoration(
               shape: BoxShape.circle,
             ),
             height: MediaQuery.of(context).size.height,
@@ -40,49 +41,60 @@ class _LoginScreenState extends State<LoginScreen> {
               children: <Widget>[
                 Hero(
                   tag: 'flash',
-                  child:Container(
-                    child:const Image(
-                      image: AssetImage('images/logo.png')),
+                  child: Container(
+                    child: const Image(image: AssetImage('images/logo.png')),
                     height: 200.0,
                   ),
                 ),
                 const SizedBox(
                   height: 50,
                 ),
-                TextFieldInput(inputText:'email',visible: false,keyboardType: TextInputType.emailAddress, onChanged: (String value) {
-                  email = value;
-                },),
+                TextFieldInput(
+                  inputText: 'email',
+                  visible: false,
+                  keyboardType: TextInputType.emailAddress,
+                  onChanged: (String value) {
+                    email = value;
+                  },
+                ),
                 const SizedBox(
                   height: 12.0,
                 ),
-                TextFieldInput(inputText:'password',visible: true,keyboardType: TextInputType.visiblePassword,onChanged: (value){
-                  password = value;
-                },),
+                TextFieldInput(
+                  inputText: 'password',
+                  visible: true,
+                  keyboardType: TextInputType.visiblePassword,
+                  onChanged: (value) {
+                    password = value;
+                  },
+                ),
                 const SizedBox(
                   height: 24.0,
                 ),
                 RoundedButton(
-                  text:'Login',
-                  color:Colors.blueAccent,
-                  onPressed: ()async{
+                  text: 'Login',
+                  color: Colors.blueAccent,
+                  onPressed: () async {
                     setState(() {
                       showSpinner = true;
                     });
-                    try{
-                      final loginUser = await _auth.signInWithEmailAndPassword(email: email, password: password);
-                      if(loginUser != null)
-                        {
-                          Provider.of<ChatProvider>(context,listen: false).init(email);
-                          Navigator.pop(context);
-                          Navigator.pushReplacementNamed(context,ChatsScreen.id);
-                        }
+                    try {
+                      final loginUser = await _auth.signInWithEmailAndPassword(
+                          email: email, password: password);
+                      if (loginUser != null) {
+                        Provider.of<ChatProvider>(context, listen: false)
+                            .init(email);
+                        Navigator.pop(context);
+                        Navigator.pushReplacementNamed(context, ChatsScreen.id);
+                      }
                       setState(() {
                         showSpinner = false;
                       });
-                    }catch(e){
+                    } catch (e) {
                       print(e);
                     }
-                  },),
+                  },
+                ),
               ],
             ),
           ),

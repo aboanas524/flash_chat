@@ -23,10 +23,9 @@ class _ChatsScreenState extends State<ChatsScreen> {
   }
 
   final _auth = FirebaseAuth.instance;
-   User? loggedInUser;
+  User? loggedInUser;
 
-  void getCurrentUser() async
-  {
+  void getCurrentUser() async {
     try {
       final user = await _auth.currentUser;
       if (user != null) {
@@ -36,15 +35,17 @@ class _ChatsScreenState extends State<ChatsScreen> {
       print('Error in auth = $e');
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child:Scaffold(
-        floatingActionButton:FloatingActionButton(
-          child:const Icon(Icons.add),
-          onPressed: (){
-            Navigator.pushNamed(context, 'add_chat');
-          },) ,
+      child: Scaffold(
+          floatingActionButton: FloatingActionButton(
+            child: const Icon(Icons.add),
+            onPressed: () {
+              Navigator.pushNamed(context, 'add_chat');
+            },
+          ),
           appBar: AppBar(
             automaticallyImplyLeading: false,
             actions: <Widget>[
@@ -59,25 +60,19 @@ class _ChatsScreenState extends State<ChatsScreen> {
             backgroundColor: Colors.lightBlueAccent,
           ),
           body: Container(
-            width: MediaQuery
-                .of(context)
-                .size
-                .width,
-            height: MediaQuery
-                .of(context)
-                .size
-                .height,
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               mainAxisAlignment: MainAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                Expanded(child: MessagesStream(
-                    myUser: loggedInUser?.email.toString()??'')),
+                Expanded(
+                    child: MessagesStream(
+                        myUser: loggedInUser?.email.toString() ?? '')),
               ],
             ),
-          )
-      ),
+          )),
     );
   }
 }

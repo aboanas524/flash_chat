@@ -9,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 
-
 // ignore: must_be_immutable
 class AddChat extends StatefulWidget {
   AddChat({Key? key}) : super(key: key);
@@ -40,15 +39,12 @@ class _AddChatState extends State<AddChat> {
     super.initState();
   }
 
-  Future getNumbers() async
-  {
+  Future getNumbers() async {
     if (await FlutterContacts.requestPermission()) {
-      var ccs = await FlutterContacts.getContacts(withPhoto: true,
-          withProperties: true);
+      var ccs = await FlutterContacts.getContacts(
+          withPhoto: true, withProperties: true);
       contacts = ccs.where((element) => element.emails.isNotEmpty).toList();
-      setState(() {
-
-      });
+      setState(() {});
     }
   }
 
@@ -60,38 +56,47 @@ class _AddChatState extends State<AddChat> {
       appBar: AppBar(
         title: const Text('Add Chat'),
         actions: [
-          IconButton(icon: const Icon(Icons.refresh),
+          IconButton(
+              icon: const Icon(Icons.refresh),
               onPressed: () {
                 getNumbers();
-              }), const SizedBox(width: 10,)],
+              }),
+          const SizedBox(
+            width: 10,
+          )
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(10),
-        child: contacts?.isEmpty != false ? const Center(
-            child: CircularProgressIndicator()) : ListView.builder(
-            itemCount: contacts?.length ?? 0,
-            itemBuilder: (context, index) {
-              return InkWell(
-                onTap: () {
-                  chatProvider.addChat(Chat(
-                      personName: contacts![index].displayName,
-                      firstEmail: FirebaseAuth.instance.currentUser!.email!,
-                      firstPhoto: contacts![index].photo!,
-                      secondEmail: contacts![index].emails.first.address,
-                      secondPhoto: contacts![index].photo!,
-                      lastMessageTime: Timestamp.fromDate(DateTime.now())));
-                  //Navigator.pushNamed(context, ChatScreen.id);
-                },
-                child: ListTile(
-                  title: Text(contacts![index].displayName),
-                  subtitle: Text(contacts![index].emails.first.address),
-                  leading: CircleAvatar(child: ClipOval(
-                    child: contacts![index].photo == null ? const Icon(
-                        Icons.contacts) : Image.memory(
-                        contacts![index].photo!),),),
-                ),
-              );
-            }),
+        child: contacts?.isEmpty != false
+            ? const Center(child: CircularProgressIndicator())
+            : ListView.builder(
+                itemCount: contacts?.length ?? 0,
+                itemBuilder: (context, index) {
+                  return InkWell(
+                    onTap: () {
+                      chatProvider.addChat(Chat(
+                          personName: contacts![index].displayName,
+                          firstEmail: FirebaseAuth.instance.currentUser!.email!,
+                          firstPhoto: contacts![index].photo!,
+                          secondEmail: contacts![index].emails.first.address,
+                          secondPhoto: contacts![index].photo!,
+                          lastMessageTime: Timestamp.fromDate(DateTime.now())));
+                      //Navigator.pushNamed(context, ChatScreen.id);
+                    },
+                    child: ListTile(
+                      title: Text(contacts![index].displayName),
+                      subtitle: Text(contacts![index].emails.first.address),
+                      leading: CircleAvatar(
+                        child: ClipOval(
+                          child: contacts![index].photo == null
+                              ? const Icon(Icons.contacts)
+                              : Image.memory(contacts![index].photo!),
+                        ),
+                      ),
+                    ),
+                  );
+                }),
       ),
     );
   }
