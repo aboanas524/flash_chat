@@ -13,9 +13,9 @@ class ChatStyle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        ListTile(
+    return Padding(
+      padding:const EdgeInsets.only(bottom: 10),
+      child:  ListTile(
           title: Text(chats.chats[index].personName),
           leading: SizedBox(height: 80,
               width: 65,
@@ -26,10 +26,6 @@ class ChatStyle extends StatelessWidget {
           subtitle: Text(DateFormat.yMd().add_jm().format(
               chats.chats[index].lastMessageTime.toDate())),
         ),
-        const SizedBox(
-          height: 10,
-        )
-      ],
     );
   }
 }

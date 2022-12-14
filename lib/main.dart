@@ -1,14 +1,25 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flash_chat/providers/chatProvider.dart';
+import 'package:flash_chat/screens/add_chat.dart';
 import 'package:flutter/material.dart';
 import 'package:flash_chat/screens/welcome_screen.dart';
 import 'package:flash_chat/screens/login_screen.dart';
 import 'package:flash_chat/screens/registration_screen.dart';
-import 'package:flash_chat/screens/chat_screen.dart';
+import 'package:flash_chat/screens/chats_screen.dart';
+import 'package:provider/provider.dart';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  runApp(const FlashChat());
+  runApp(
+    MultiProvider(
+    providers: [
+      ChangeNotifierProvider(create: (_) => ChatProvider()),
+    ],
+    child: const FlashChat(),
+  ));
+
 }
 
 class FlashChat extends StatelessWidget {
@@ -20,10 +31,11 @@ class FlashChat extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       initialRoute: WelcomeScreen.id,
       routes: {
+        AddChat.id:(context)=>AddChat(),
         WelcomeScreen.id:(context) =>const WelcomeScreen(),
         LoginScreen.id:(context) =>const LoginScreen(),
         RegistrationScreen.id:(context) =>const RegistrationScreen(),
-        ChatScreen.id:(context) =>const ChatScreen(),
+        ChatsScreen.id:(context) =>const ChatsScreen(),
       },
     );
   }

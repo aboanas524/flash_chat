@@ -1,8 +1,13 @@
+import 'package:firebase_auth/firebase_auth.dart';
+//import 'package:firebase_core/firebase_core.dart';
+import 'package:flash_chat/providers/chatProvider.dart';
+import 'package:flash_chat/screens/chats_screen.dart';
 import 'package:flash_chat/screens/login_screen.dart';
 import 'package:flash_chat/screens/registration_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
-import 'package:flash_chat/components/rounded_button.dart';
+import 'package:flash_chat/widgets//rounded_button.dart';
+import 'package:provider/provider.dart';
 
 class WelcomeScreen extends StatefulWidget {
   static const String id = 'WelcomeScreen';
@@ -16,6 +21,7 @@ class WelcomeScreen extends StatefulWidget {
 class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProviderStateMixin {
   late AnimationController controller;
   late Animation animation;
+  bool isInit = false;
 
   @override
   void initState() {
@@ -49,9 +55,17 @@ class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProvider
 
   @override
   Widget build(BuildContext context) {
+    if(!isInit  && FirebaseAuth.instance.currentUser!= null)
+      {
+        isInit =true;
+        Future.delayed(const Duration(microseconds: 1)).then((value){
+          Provider.of<ChatProvider>(context,listen: false).init(FirebaseAuth.instance.currentUser!.email!);
+          Navigator.pushReplacementNamed(context,ChatsScreen.id);
+        });
+      }
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Padding(
+      body: isInit ?const Center(child: CircularProgressIndicator(),) : Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24.0),
         child: SingleChildScrollView(
           child: Container(
@@ -70,7 +84,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProvider
                           child: Image.asset('images/logo.png')),
                     ),
                     DefaultTextStyle(
-                      child: AnimatedTextKit(
+                      child:AnimatedTextKit(
                         animatedTexts: [
                           TypewriterAnimatedText('Flash Chat',
                             speed: const Duration(milliseconds: 300,),),

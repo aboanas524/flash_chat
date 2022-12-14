@@ -1,26 +1,28 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flash_chat/screens/chat_screen.dart';
+import 'package:flash_chat/screens/chats_screen.dart';
 import 'package:flutter/material.dart';
 //import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:provider/provider.dart';
+import 'package:flash_chat/providers/chatProvider.dart';
 
-import '../components/TextFieldInput.dart';
-import '../components/rounded_button.dart';
-
+import '../widgets//TextFieldInput.dart';
+import '../widgets//rounded_button.dart';
 class LoginScreen extends StatefulWidget {
   static const String id = 'login_screen';
-
   const LoginScreen({super.key});
 
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
 class _LoginScreenState extends State<LoginScreen> {
-  final _auth = FirebaseAuth.instance;
   late String email;
+  final _auth = FirebaseAuth.instance;
+
   late String password;
   late bool showSpinner=false;
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: Padding(
@@ -38,8 +40,8 @@ class _LoginScreenState extends State<LoginScreen> {
               children: <Widget>[
                 Hero(
                   tag: 'flash',
-                  child: Container(
-                    child: const Image(
+                  child:Container(
+                    child:const Image(
                       image: AssetImage('images/logo.png')),
                     height: 200.0,
                   ),
@@ -47,9 +49,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 const SizedBox(
                   height: 50,
                 ),
-                TextFieldInput(inputText:'email',visible: false,keyboardType: TextInputType.emailAddress,onChanged: (value){
+                TextFieldInput(inputText:'email',visible: false,keyboardType: TextInputType.emailAddress, onChanged: (String value) {
                   email = value;
-                }),
+                },),
                 const SizedBox(
                   height: 12.0,
                 ),
@@ -70,7 +72,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       final loginUser = await _auth.signInWithEmailAndPassword(email: email, password: password);
                       if(loginUser != null)
                         {
-                          Navigator.pushNamed(context, ChatScreen.id);
+                          Provider.of<ChatProvider>(context,listen: false).init(email);
+                          Navigator.pop(context);
+                          Navigator.pushReplacementNamed(context,ChatsScreen.id);
                         }
                       setState(() {
                         showSpinner = false;
