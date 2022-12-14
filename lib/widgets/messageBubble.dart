@@ -9,7 +9,11 @@ class MessageBubble extends StatelessWidget {
   final Timestamp timeMessage;
 
   const MessageBubble(
-      {Key? key, required this.messageText, required this.messageSender, required this.myUser, required this.timeMessage})
+      {Key? key,
+      required this.messageText,
+      required this.messageSender,
+      required this.myUser,
+      required this.timeMessage})
       : super(key: key);
 
   @override
@@ -23,25 +27,39 @@ class MessageBubble extends StatelessWidget {
         children: [
           Material(
             elevation: 5,
-            borderRadius: myUser == messageSender ? const BorderRadius.only(
-                topLeft: Radius.circular(25),
-                bottomRight: Radius.circular(30),
-                bottomLeft: Radius.circular(25)) : const BorderRadius.only(
-                topRight: Radius.circular(25),
-                bottomRight: Radius.circular(25),
-                bottomLeft: Radius.circular(30)),
+            borderRadius: myUser == messageSender
+                ? const BorderRadius.only(
+                    topLeft: Radius.circular(25),
+                    bottomRight: Radius.circular(30),
+                    bottomLeft: Radius.circular(25))
+                : const BorderRadius.only(
+                    topRight: Radius.circular(25),
+                    bottomRight: Radius.circular(25),
+                    bottomLeft: Radius.circular(30)),
             color: myUser == messageSender ? Colors.blue : Colors.grey,
             child: Padding(
-              padding: myUser == messageSender? const EdgeInsets.only(left: 20,top: 5,bottom: 5,right: 20):const EdgeInsets.only(left: 14,bottom: 5,top: 5,right: 7),
+              padding: myUser == messageSender
+                  ? const EdgeInsets.only(
+                      left: 20, top: 5, bottom: 5, right: 20)
+                  : const EdgeInsets.only(
+                      left: 14, bottom: 5, top: 5, right: 7),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  myUser==messageSender?const SizedBox():Text(messageSender,style:const TextStyle(color: Colors.amberAccent),),
+                  myUser == messageSender
+                      ? const SizedBox()
+                      : Text(
+                          messageSender,
+                          style: const TextStyle(color: Colors.amberAccent),
+                        ),
                   Text(
                     messageText,
                     style: const TextStyle(color: Colors.white, fontSize: 20),
                   ),
-                  Text(DateFormat('h:mm a').format( timeMessage.toDate()),style:const TextStyle(fontSize: 10,color: Colors.white70),),
+                  Text(
+                    DateFormat('h:mm a').format(timeMessage.toDate()),
+                    style: const TextStyle(fontSize: 10, color: Colors.white70),
+                  ),
                 ],
               ),
             ),
